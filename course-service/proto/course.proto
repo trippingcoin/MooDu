@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package course;
+
+option go_package = "github.com/torekhan/minimoodle-course-service/pb;pb";
+
+service CourseService {
+  rpc CreateCourse(CreateCourseRequest) returns (CourseResponse);
+  rpc GetCourse(GetCourseRequest) returns (CourseResponse);
+  rpc ListCourses(Empty) returns (CourseList);
+}
+
+message Course {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string teacher_id = 4;
+}
+
+message CreateCourseRequest {
+  string title = 1;
+  string description = 2;
+  string teacher_id = 3;
+}
+
+message GetCourseRequest {
+  string id = 1;
+}
+
+message CourseResponse {
+  Course course = 1;
+}
+
+message CourseList {
+  repeated Course courses = 1;
+}
+
+message Empty {}
