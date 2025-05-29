@@ -6,8 +6,10 @@ option go_package = "github.com/torekhan/minimoodle-course-service/pb;pb";
 
 service CourseService {
   rpc CreateCourse(CreateCourseRequest) returns (CourseResponse);
+  rpc UpdateCourse(UpdateCourseRequest) returns (UpdateCourseResponse);
   rpc GetCourse(GetCourseRequest) returns (CourseResponse);
   rpc ListCourses(Empty) returns (CourseList);
+  rpc DeleteCourse(DeleteCourseRequest) returns (DeleteCourseResponse);
 }
 
 message Course {
@@ -23,6 +25,17 @@ message CreateCourseRequest {
   string teacher_id = 3;
 }
 
+message UpdateCourseRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string instructor = 4;
+}
+
+message UpdateCourseResponse {
+  Course course = 1;
+}
+
 message GetCourseRequest {
   string id = 1;
 }
@@ -36,3 +49,11 @@ message CourseList {
 }
 
 message Empty {}
+
+message DeleteCourseRequest {
+  string id = 1;
+}
+
+message DeleteCourseResponse {
+  string message = 1;
+}

@@ -31,6 +31,24 @@ func (r *MongoCourseRepo) Create(course *model.Course) error {
 	return err
 }
 
+func (r *MongoCourseRepo) Update(course *model.Course) error {
+	objID, err := primitive.ObjectIDFromHex(course.ID)
+	if err != nil {
+		return err
+	}
+	filter := bson.M{"_id": objID}
+	update := bson.M{
+		"$set": bson.M{
+			"title":       course.Title,
+			"description": course.Description,
+			"teacherid":   course.TeacherID,
+		},
+	}
+
+	_, err = r.collection.UpdateOne(context.TODO(), filter, update)
+	return err
+}
+
 func (r *MongoCourseRepo) GetByID(id string) (*model.Course, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -66,4 +84,17 @@ func (r *MongoCourseRepo) List() ([]*model.Course, error) {
 	}
 
 	return courses, nil
+}
+
+func (r *MongoCourseRepo) Delete(id string) error {
+	filter := bson.M{"id": id}
+	res, err := r.collection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+
+	if res.DeletedCount == 0 {
+		return errors.New("course not found")
+	}
+	return nil
 }
