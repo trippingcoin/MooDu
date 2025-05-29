@@ -32,11 +32,7 @@ func (r *MongoCourseRepo) Create(course *model.Course) error {
 }
 
 func (r *MongoCourseRepo) Update(course *model.Course) error {
-	objID, err := primitive.ObjectIDFromHex(course.ID)
-	if err != nil {
-		return err
-	}
-	filter := bson.M{"_id": objID}
+	filter := bson.M{"_id": course.ID}
 	update := bson.M{
 		"$set": bson.M{
 			"title":       course.Title,
@@ -45,7 +41,7 @@ func (r *MongoCourseRepo) Update(course *model.Course) error {
 		},
 	}
 
-	_, err = r.collection.UpdateOne(context.TODO(), filter, update)
+	_, err := r.collection.UpdateOne(context.TODO(), filter, update)
 	return err
 }
 

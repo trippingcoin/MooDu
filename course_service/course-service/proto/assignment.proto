@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package assignment;
+
+option go_package = "cs/pb_as;pb";
+
+service AssignmentService {
+  rpc CreateAssignment(CreateAssignmentRequest) returns (AssignmentResponse);
+  rpc UpdateAssignment(UpdateAssignmentRequest) returns (AssignmentResponse);
+  rpc DeleteAssignment(DeleteAssignmentRequest) returns (Empty);
+  rpc GetAssignment(GetAssignmentRequest) returns (AssignmentResponse);
+  rpc ListAssignments(Empty) returns (AssignmentList);
+  rpc AddSubmissions(AddSubmissionsRequest) returns (AssignmentResponse);
+}
+
+message Assignment {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string course_id = 4;
+  string deadline = 5;
+}
+
+message AssignmentResponse {
+  Assignment assignment = 1;
+}
+
+message AssignmentList {
+  repeated Assignment assignments = 1;
+}
+
+message CreateAssignmentRequest {
+  string title = 1;
+  string description = 2;
+  string course_id = 3;
+  string deadline = 4;
+}
+
+message UpdateAssignmentRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string course_id = 4;
+  string deadline = 5;
+}
+
+message DeleteAssignmentRequest {
+  string id = 1;
+}
+
+message GetAssignmentRequest {
+  string id = 1;
+}
+
+message Empty {}
+
+message AddSubmissionsRequest {
+  string assignment_id = 1;
+  repeated string submission_ids = 2;
+}

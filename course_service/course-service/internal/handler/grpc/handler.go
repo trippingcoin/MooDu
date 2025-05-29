@@ -6,23 +6,23 @@ import (
 
 	"cs/course-service/internal/model"
 	"cs/course-service/internal/usecase"
-	pb "cs/pb"
+	pb "cs/pb_cs"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-type Handler struct {
+type HandlerCourse struct {
 	pb.UnimplementedCourseServiceServer
 	usecase *usecase.CourseUsecase
 }
 
-func New(usecase *usecase.CourseUsecase) *Handler {
-	return &Handler{usecase: usecase}
+func NewCO(usecase *usecase.CourseUsecase) *HandlerCourse {
+	return &HandlerCourse{usecase: usecase}
 }
 
-func (h *Handler) CreateCourse(ctx context.Context, req *pb.CreateCourseRequest) (*pb.CourseResponse, error) {
+func (h *HandlerCourse) CreateCourse(ctx context.Context, req *pb.CreateCourseRequest) (*pb.CourseResponse, error) {
 	c := &model.Course{
 		Title:       req.Title,
 		Description: req.Description,
@@ -42,7 +42,7 @@ func (h *Handler) CreateCourse(ctx context.Context, req *pb.CreateCourseRequest)
 	}, nil
 }
 
-func (h *Handler) UpdateCourse(ctx context.Context, req *pb.UpdateCourseRequest) (*pb.UpdateCourseResponse, error) {
+func (h *HandlerCourse) UpdateCourse(ctx context.Context, req *pb.UpdateCourseRequest) (*pb.UpdateCourseResponse, error) {
 	if _, err := primitive.ObjectIDFromHex(req.GetId()); err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid course ID")
 	}
@@ -68,7 +68,7 @@ func (h *Handler) UpdateCourse(ctx context.Context, req *pb.UpdateCourseRequest)
 	}, nil
 }
 
-func (h *Handler) GetCourse(ctx context.Context, req *pb.GetCourseRequest) (*pb.CourseResponse, error) {
+func (h *HandlerCourse) GetCourse(ctx context.Context, req *pb.GetCourseRequest) (*pb.CourseResponse, error) {
 	c, err := h.usecase.GetByID(req.Id)
 	if err != nil {
 		log.Printf("Error retrieving course with ID %s: %v", req.Id, err)
@@ -85,7 +85,7 @@ func (h *Handler) GetCourse(ctx context.Context, req *pb.GetCourseRequest) (*pb.
 	}, nil
 }
 
-func (h *Handler) ListCourses(ctx context.Context, _ *pb.Empty) (*pb.CourseList, error) {
+func (h *HandlerCourse) ListCourses(ctx context.Context, _ *pb.Empty) (*pb.CourseList, error) {
 	courses, err := h.usecase.List()
 	if err != nil {
 		return nil, err
@@ -102,7 +102,7 @@ func (h *Handler) ListCourses(ctx context.Context, _ *pb.Empty) (*pb.CourseList,
 	return &pb.CourseList{Courses: res}, nil
 }
 
-func (h *Handler) DeleteCourse(ctx context.Context, req *pb.DeleteCourseRequest) (*pb.DeleteCourseResponse, error) {
+func (h *HandlerCourse) DeleteCourse(ctx context.Context, req *pb.DeleteCourseRequest) (*pb.DeleteCourseResponse, error) {
 	if _, err := primitive.ObjectIDFromHex(req.Id); err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid course ID")
 	}

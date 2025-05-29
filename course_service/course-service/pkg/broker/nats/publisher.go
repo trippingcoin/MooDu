@@ -66,3 +66,48 @@ func (p *NATSPublisher) PublishCourseDeleted(courseID string) error {
 	log.Println("Published course.deleted to NATS")
 	return nil
 }
+
+func (p *NATSPublisher) PublishAssignmentCreated(course *model.Assignment) error {
+	msg, err := json.Marshal(course)
+	if err != nil {
+		return err
+	}
+
+	subject := "assignment.created"
+	if err := p.conn.Publish(subject, msg); err != nil {
+		return err
+	}
+
+	log.Println("Published assignment.created to NATS")
+	return nil
+}
+
+func (p *NATSPublisher) PublishAssignmentUpdated(course *model.Assignment) error {
+	msg, err := json.Marshal(course)
+	if err != nil {
+		return err
+	}
+
+	subject := "assignment.updated"
+	if err := p.conn.Publish(subject, msg); err != nil {
+		return err
+	}
+
+	log.Println("Published assignment.updated to NATS")
+	return nil
+}
+
+func (p *NATSPublisher) PublishAssignmentDeleted(courseID string) error {
+	msg, err := json.Marshal(map[string]string{"id": courseID})
+	if err != nil {
+		return err
+	}
+
+	subject := "assignment.deleted"
+	if err := p.conn.Publish(subject, msg); err != nil {
+		return err
+	}
+
+	log.Println("Published assignment.deleted to NATS")
+	return nil
+}

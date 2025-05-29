@@ -1,29 +1,42 @@
 package main
 
 import (
-	"cs/course-service/internal/cache"
+	cache "cs/course-service/internal/cache/inmemory"
+	cacheR "cs/course-service/internal/cache/redis"
+
 	grpcH "cs/course-service/internal/handler/grpc"
 	"cs/course-service/internal/repo/mongodb"
 	"cs/course-service/internal/usecase"
 	"cs/course-service/pkg/broker/nats"
-	"cs/pb"
+	pbAS "cs/pb_as"
+	pb "cs/pb_cs"
 	"log"
 	"net"
 
 	"cs/course-service/pkg/mongo"
 
+	"github.com/redis/go-redis/v9"
 	"google.golang.org/grpc"
 )
 
 func main() {
-
 	db, err := mongo.ConnectMongo()
 	if err != nil {
 		log.Println("mongo: %w", err)
 	}
+
 	repo := mongodb.NewCourseRepo(db)
+	repoAS := mongodb.NewAS(db)
 
 	courseCache := cache.NewInMemoryCourseCache()
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	assignmentCache := cacheR.NewAssignmentRedisCache(rdb)
 
 	transactor := mongo.NewTransactor(db.Client())
 
@@ -33,8 +46,10 @@ func main() {
 	}
 	log.Println("Succesful to connect to Nats")
 
+	useCaseAs := usecase.NewAssignemntUc(repoAS, publisher, transactor.WithinTransaction, assignmentCache)
+	handlerAS := grpcH.NewAS(useCaseAs)
 	useCase := usecase.New(repo, publisher, transactor.WithinTransaction, courseCache)
-	handler := grpcH.New(useCase)
+	handler := grpcH.NewCO(useCase)
 
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
@@ -42,6 +57,7 @@ func main() {
 	}
 	server := grpc.NewServer()
 	pb.RegisterCourseServiceServer(server, handler)
+	pbAS.RegisterAssignmentServiceServer(server, handlerAS)
 
 	log.Println("CourseService gRPC server is running on :50051")
 	if err := server.Serve(lis); err != nil {

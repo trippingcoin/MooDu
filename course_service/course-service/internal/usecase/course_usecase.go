@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"cs/course-service/internal/cache"
+	cache "cs/course-service/internal/cache/inmemory"
 	"cs/course-service/internal/model"
 	"cs/course-service/pkg/broker"
 	"cs/course-service/pkg/transactor"
