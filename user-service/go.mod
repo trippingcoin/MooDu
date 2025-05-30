@@ -7,7 +7,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/joho/godotenv v1.5.1
 	github.com/nats-io/nats.go v1.42.0
-	go.mongodb.org/mongo-driver v1.17.3
+	go.mongodb.org/mongo-driver v1.13.1
 	golang.org/x/crypto v0.38.0
 	google.golang.org/grpc v1.72.2
 	google.golang.org/protobuf v1.36.6
