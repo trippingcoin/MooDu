@@ -42,10 +42,10 @@ type Nats struct {
 func New() *Config {
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("⚠️  Warning: .env file not found, using system environment variables")
+		log.Println("Warning: .env file not found, using system environment variables")
 	}
 
-	port, _ := strconv.Atoi(getEnv("GRPC_PORT", "50051"))
+	port, _ := strconv.Atoi(getEnv("GRPC_PORT", "50052"))
 	maxMsg, _ := strconv.Atoi(getEnv("GRPC_MAX_MESSAGE_SIZE_MIB", "12"))
 	age, _ := time.ParseDuration(getEnv("GRPC_MAX_CONNECTION_AGE", "30s"))
 	ageGrace, _ := time.ParseDuration(getEnv("GRPC_MAX_CONNECTION_AGE_GRACE", "10s"))
@@ -54,8 +54,8 @@ func New() *Config {
 
 	cfg := &Config{
 		Mongo: mongo.Config{
-			Database:     getEnv("MONGO_DB", ""),
-			URI:          getEnv("MONGO_DB_URI", ""),
+			Database:     getEnv("MONGO_DB", "minimoodle"),
+			URI:          getEnv("MONGO_DB_URI", "mongodb://localhost:27017"),
 			Username:     getEnv("MONGO_USERNAME", ""),
 			Password:     getEnv("MONGO_PWD", ""),
 			ReplicaSet:   getEnv("MONGO_DB_REPLICA_SET", ""),

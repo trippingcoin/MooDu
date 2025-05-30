@@ -1,10 +1,10 @@
 package handler
 
 import (
-	assignment "api/course"
+	assignment "api/grpc"
 	"net/http"
 
-	pb "api/pb"
+	pb "api/pb/coursepb"
 
 	"github.com/gin-gonic/gin"
 )

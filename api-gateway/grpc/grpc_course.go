@@ -1,7 +1,7 @@
-package course
+package grpc
 
 import (
-	pb "api/pb"
+	pb "api/pb/coursepb"
 	"log"
 
 	"google.golang.org/grpc"
