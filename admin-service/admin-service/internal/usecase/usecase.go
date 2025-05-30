@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"admin/admin-service/internal/cache"
-	nats "admin/admin-service/pkg/broker"
 	"admin/admin-service/pkg/transactor"
 	"admin/pb"
 	"context"
@@ -18,14 +17,18 @@ type AdminRepository interface {
 	SubmitCertificateRequest(studentID, certType, details string) error
 }
 
+type Publisher interface {
+	Publish(subject string, v interface{}) error
+}
+
 type AdminUsecase struct {
 	repo      AdminRepository
-	publisher *nats.NATSPublisher
+	publisher Publisher
 	callTx    transactor.WithinTransactionFunc
 	cache     cache.AdminCache
 }
 
-func NewAdminUsecase(repo AdminRepository, publisher *nats.NATSPublisher, callTx transactor.WithinTransactionFunc, cache cache.AdminCache) *AdminUsecase {
+func NewAdminUsecase(repo AdminRepository, publisher Publisher, callTx transactor.WithinTransactionFunc, cache cache.AdminCache) *AdminUsecase {
 	return &AdminUsecase{
 		repo:      repo,
 		publisher: publisher,
