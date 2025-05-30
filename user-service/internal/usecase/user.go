@@ -73,21 +73,17 @@ func (uc *UserService) Login(ctx context.Context, email, password string) (*doma
 	if err != nil {
 		return nil, err
 	}
-
 	if err := uc.passwordManager.CheckPassword(user.PasswordHash, password); err != nil {
 		return nil, err
 	}
-
 	accessToken, err := uc.jwtManager.GenerateAccessToken(user.ID.Hex(), user.Role)
 	if err != nil {
 		return nil, err
 	}
-
 	refreshToken, err := uc.jwtManager.GenerateRefreshToken(user.ID.Hex())
 	if err != nil {
 		return nil, err
 	}
-
 	session := domain.Session{
 		UserID:       user.ID.Hex(),
 		RefreshToken: refreshToken,

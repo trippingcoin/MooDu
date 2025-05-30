@@ -41,7 +41,7 @@ func (r *UserRepository) GetByID(ctx context.Context, id string) (*domain.User, 
 	}
 
 	var u dao.User
-	err = r.db.Collection(r.collection).FindOne(ctx, bson.M{"_id": objID, "isdeleted": false}).Decode(&u)
+	err = r.db.Collection(r.collection).FindOne(ctx, bson.M{"_id": objID, "is_deleted": false}).Decode(&u)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, domain.ErrNotFound
@@ -55,7 +55,7 @@ func (r *UserRepository) GetByID(ctx context.Context, id string) (*domain.User, 
 
 func (r *UserRepository) GetByBarcode(ctx context.Context, barcode string) (*domain.User, error) {
 	var u dao.User
-	err := r.db.Collection(r.collection).FindOne(ctx, bson.M{"barcode": barcode, "isdeleted": false}).Decode(&u)
+	err := r.db.Collection(r.collection).FindOne(ctx, bson.M{"barcode": barcode, "is_deleted": false}).Decode(&u)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, domain.ErrNotFound
@@ -68,7 +68,7 @@ func (r *UserRepository) GetByBarcode(ctx context.Context, barcode string) (*dom
 
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
 	var u dao.User
-	err := r.db.Collection(r.collection).FindOne(ctx, bson.M{"email": email, "isdeleted": false}).Decode(&u)
+	err := r.db.Collection(r.collection).FindOne(ctx, bson.M{"email": email, "is_deleted": false}).Decode(&u)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, domain.ErrNotFound
@@ -96,7 +96,7 @@ func (r *UserRepository) SoftDelete(ctx context.Context, id string) error {
 	_, err = r.db.Collection(r.collection).UpdateOne(
 		ctx,
 		bson.M{"_id": objID},
-		bson.M{"$set": bson.M{"isdeleted": true}},
+		bson.M{"$set": bson.M{"is_deleted": true}},
 	)
 	return err
 }
