@@ -90,12 +90,12 @@ func (r *MongoAssignmentRepo) Update(a *model.Assignment) error {
 }
 
 func (r *MongoAssignmentRepo) Delete(id string) error {
-	objID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return err
-	}
+	// objID, err := primitive.ObjectIDFromHex(id)
+	// if err != nil {
+	// 	return err
+	// }
 
-	res, err := r.collection.DeleteOne(context.TODO(), bson.M{"_id": objID})
+	res, err := r.collection.DeleteOne(context.TODO(), bson.M{"_id": id})
 	if err != nil {
 		return err
 	}

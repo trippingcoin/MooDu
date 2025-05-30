@@ -5,7 +5,7 @@ import (
 
 	"cs/course-service/internal/model"
 	"cs/course-service/internal/usecase"
-	pb "cs/pb_as"
+	pb "cs/pb"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"

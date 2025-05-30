@@ -8,8 +8,7 @@ import (
 	"cs/course-service/internal/repo/mongodb"
 	"cs/course-service/internal/usecase"
 	"cs/course-service/pkg/broker/nats"
-	pbAS "cs/pb_as"
-	pb "cs/pb_cs"
+	pb "cs/pb"
 	"log"
 	"net"
 
@@ -57,7 +56,7 @@ func main() {
 	}
 	server := grpc.NewServer()
 	pb.RegisterCourseServiceServer(server, handler)
-	pbAS.RegisterAssignmentServiceServer(server, handlerAS)
+	pb.RegisterAssignmentServiceServer(server, handlerAS)
 
 	log.Println("CourseService gRPC server is running on :50051")
 	if err := server.Serve(lis); err != nil {
