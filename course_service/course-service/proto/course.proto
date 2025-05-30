@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package minimoodle;
+
+option go_package = "cs/pb;pb";
+
+// ---------------- CourseService ----------------
+
+service CourseService {
+  rpc CreateCourse(CreateCourseRequest) returns (CourseResponse);
+  rpc UpdateCourse(UpdateCourseRequest) returns (UpdateCourseResponse);
+  rpc GetCourse(GetCourseRequest) returns (CourseResponse);
+  rpc ListCourses(Empty) returns (CourseList);
+  rpc DeleteCourse(DeleteCourseRequest) returns (DeleteCourseResponse);
+}
+
+message Course {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string teacher_id = 4;
+}
+
+message CreateCourseRequest {
+  string title = 1;
+  string description = 2;
+  string teacher_id = 3;
+}
+
+message UpdateCourseRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string instructor = 4;
+}
+
+message UpdateCourseResponse {
+  Course course = 1;
+}
+
+message GetCourseRequest {
+  string id = 1;
+}
+
+message CourseResponse {
+  Course course = 1;
+}
+
+message CourseList {
+  repeated Course courses = 1;
+}
+
+message DeleteCourseRequest {
+  string id = 1;
+}
+
+message DeleteCourseResponse {
+  string message = 1;
+}
+
+// ---------------- AssignmentService ----------------
+
+service AssignmentService {
+  rpc CreateAssignment(CreateAssignmentRequest) returns (AssignmentResponse);
+  rpc UpdateAssignment(UpdateAssignmentRequest) returns (AssignmentResponse);
+  rpc DeleteAssignment(DeleteAssignmentRequest) returns (Empty);
+  rpc GetAssignment(GetAssignmentRequest) returns (AssignmentResponse);
+  rpc ListAssignments(Empty) returns (AssignmentList);
+  rpc AddSubmissions(AddSubmissionsRequest) returns (AssignmentResponse);
+}
+
+message Assignment {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string course_id = 4;
+  string deadline = 5;
+}
+
+message AssignmentResponse {
+  Assignment assignment = 1;
+}
+
+message AssignmentList {
+  repeated Assignment assignments = 1;
+}
+
+message CreateAssignmentRequest {
+  string title = 1;
+  string description = 2;
+  string course_id = 3;
+  string deadline = 4;
+}
+
+message UpdateAssignmentRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string course_id = 4;
+  string deadline = 5;
+}
+
+message DeleteAssignmentRequest {
+  string id = 1;
+}
+
+message GetAssignmentRequest {
+  string id = 1;
+}
+
+message AddSubmissionsRequest {
+  string assignment_id = 1;
+  repeated string submission_ids = 2;
+}
+
+// ---------------- Общие сообщения ----------------
+
+message Empty {}
