@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package admin;
+
+option go_package = "admin/pb;pb";
+
+service AdminService {
+  rpc CreateTranscriptRequest(TranscriptRequest) returns (Empty);
+  rpc ViewQueue(Empty) returns (QueueList);
+  rpc JoinQueue(QueueRequest) returns (Empty);
+  rpc RegisterRetake(RetakeRequest) returns (Empty);
+  rpc GetSchedule(ScheduleRequest) returns (ScheduleResponse);
+  rpc UpdateSchedule(UpdateScheduleRequest) returns (Empty);
+  rpc SubmitCertificateRequest(CertificateRequest) returns (Empty);
+}
+
+message TranscriptRequest {
+  string student_id = 1;
+  string purpose = 2;
+}
+
+message QueueRequest {
+  string student_id = 1;
+  string reason = 2;
+}
+
+message QueueList {
+  repeated QueueEntry entries = 1;
+}
+
+message QueueEntry {
+  string student_id = 1;
+  string reason = 2;
+  string joined_at = 3;
+}
+
+message RetakeRequest {
+  string student_id = 1;
+  string course_id = 2;
+  string reason = 3;
+}
+
+message ScheduleRequest {
+  string student_id = 1;
+}
+
+message ScheduleResponse {
+  repeated ScheduleEntry entries = 1;
+}
+
+message ScheduleEntry {
+  string course_id = 1;
+  string day = 2;
+  string time = 3;
+  string room = 4;
+}
+
+message UpdateScheduleRequest {
+  string course_id = 1;
+  string day = 2;
+  string time = 3;
+  string room = 4;
+}
+
+message CertificateRequest {
+  string student_id = 1;
+  string certificate_type = 2;
+  string details = 3;
+}
+
+message Empty {}

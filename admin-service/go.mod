@@ -1,4 +1,4 @@
-module cs
+module admin
 
 go 1.23.0
 
@@ -10,7 +10,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	go.mongodb.org/mongo-driver v1.17.3
 	google.golang.org/grpc v1.72.2
-	google.golang.org/protobuf v1.36.6
+	google.golang.org/protobuf v1.36.5
 )
 
 require (
