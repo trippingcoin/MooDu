@@ -42,7 +42,7 @@ func (a *API) Run(ctx context.Context, errCh chan<- error) {
 }
 
 func (a *API) run(ctx context.Context) error {
-	a.s = grpc.NewServer(a.setOptions(ctx)...)
+	a.s = grpc.NewServer(a.setOptions(ctx, a.jwtSecret)...)
 
 	// Register your service
 	userpb.RegisterUserServiceServer(a.s, frontend.NewUserHandler(a.userUsecase))

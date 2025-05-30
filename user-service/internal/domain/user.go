@@ -20,6 +20,25 @@ type User struct {
 	InstructorProfile *InstructorProfile
 }
 
+func (u User) Validate() error {
+	if u.FullName == "" {
+		return ErrEmptyFullName
+	}
+	if u.Email == "" {
+		return ErrEmptyEmail
+	}
+	if u.PasswordHash == "" {
+		return ErrEmptyPassword
+	}
+	if u.Role == "" {
+		return ErrEmptyRole
+	}
+	if u.Barcode == "" {
+		return ErrEmptyBarcode
+	}
+	return nil
+}
+
 type StudentProfile struct {
 	GPA          float32
 	Certificates []string
@@ -29,4 +48,11 @@ type StudentProfile struct {
 
 type InstructorProfile struct {
 	Department string
+}
+
+type UpdateProfileInput struct {
+	UserID            string
+	FullName          string
+	StudentProfile    *StudentProfile
+	InstructorProfile *InstructorProfile
 }

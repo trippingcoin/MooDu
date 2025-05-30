@@ -33,9 +33,8 @@ func AuthInterceptor(secretKey string) grpc.UnaryServerInterceptor {
 		}
 
 		tokenStr := strings.TrimSpace(strings.TrimPrefix(authHeader[0], "Bearer "))
-		claims := jwt.MapClaims{}
+		claims := &jwt.RegisteredClaims{}
 		token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-			// Безопасность: проверка алгоритма
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, status.Error(codes.Unauthenticated, "unexpected signing method")
 			}
@@ -43,7 +42,7 @@ func AuthInterceptor(secretKey string) grpc.UnaryServerInterceptor {
 		})
 
 		if err != nil || !token.Valid {
-			return nil, status.Error(codes.Unauthenticated, "invalid token")
+			return nil, status.Error(codes.Unauthenticated, "invalid or expired token")
 		}
 
 		// Здесь ты можешь добавить claims в context если нужно

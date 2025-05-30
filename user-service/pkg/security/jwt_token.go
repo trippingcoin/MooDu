@@ -23,8 +23,6 @@ func (j *JWTManager) GenerateAccessToken(userID string, role string) (string, er
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	fmt.Println("GENERATING TOKEN FOR:", userID, role, "AT:", time.Now().Unix())
-
 	return token.SignedString([]byte(j.secretKey))
 }
 
@@ -43,6 +41,8 @@ func (j *JWTManager) Verify(tokenStr string) (jwt.MapClaims, error) {
 	_, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(j.secretKey), nil
 	})
+
+	fmt.Println("you are in verify")
 
 	return claims, err
 }

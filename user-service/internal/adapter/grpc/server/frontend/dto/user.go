@@ -54,3 +54,29 @@ func FromRegisterRequest(req *userpb.RegisterRequest) *domain.User {
 
 	return user
 }
+
+func FromUpdateProfileRequest(req *userpb.UpdateProfileRequest) *domain.UpdateProfileInput {
+	var student *domain.StudentProfile
+	if req.Gpa != 0 || len(req.Certificates) > 0 || req.BankDetails != "" || req.Major != "" {
+		student = &domain.StudentProfile{
+			GPA:          req.Gpa,
+			Certificates: req.Certificates,
+			BankDetails:  req.BankDetails,
+			Major:        req.Major,
+		}
+	}
+
+	var instructor *domain.InstructorProfile
+	if req.Department != "" {
+		instructor = &domain.InstructorProfile{
+			Department: req.Department,
+		}
+	}
+
+	return &domain.UpdateProfileInput{
+		UserID:            req.UserId,
+		FullName:          req.FullName,
+		StudentProfile:    student,
+		InstructorProfile: instructor,
+	}
+}

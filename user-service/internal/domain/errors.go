@@ -4,8 +4,14 @@ import "errors"
 
 var (
 	// Common
-	ErrInvalidID = errors.New("invalid object ID")
-	ErrNotFound  = errors.New("resource not found")
+	ErrInvalidID       = errors.New("invalid object ID")
+	ErrNotFound        = errors.New("resource not found")
+	ErrInvalidPassword = errors.New("invalid password")
+	ErrEmptyPassword   = errors.New("empty password")
+	ErrEmptyEmail      = errors.New("empty email")
+	ErrEmptyRole       = errors.New("empty role")
+	ErrEmptyFullName   = errors.New("empty full name")
+	ErrEmptyBarcode    = errors.New("empty barcode")
 
 	// Auth related
 	ErrInvalidCredentials = errors.New("invalid credentials")

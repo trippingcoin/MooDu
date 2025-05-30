@@ -102,12 +102,7 @@ func (uc *UserService) Login(ctx context.Context, email, password string) (*doma
 }
 
 func (uc *UserService) GetProfile(ctx context.Context, userID string) (*domain.User, error) {
-	user, err := uc.cache.GetUser(ctx, userID)
-	if err == nil {
-		return user, nil
-	}
-
-	user, err = uc.userRepo.GetByID(ctx, userID)
+	user, err := uc.userRepo.GetByID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -159,4 +154,71 @@ func (uc *UserService) RefreshToken(ctx context.Context, refreshToken string) (*
 		AccessToken:  accessToken,
 		RefreshToken: newRefreshToken,
 	}, nil
+}
+
+// Logout удаляет refresh токен из хранилища
+func (uc *UserService) Logout(ctx context.Context, refreshToken string) error {
+	return uc.sessionRepo.DeleteByToken(ctx, refreshToken)
+}
+
+// UpdateProfile обновляет профиль пользователя
+func (uc *UserService) UpdateProfile(ctx context.Context, input domain.UpdateProfileInput) error {
+	user, err := uc.userRepo.GetByID(ctx, input.UserID)
+	if err != nil {
+		return err
+	}
+
+	// Применяем изменения
+	if input.FullName != "" {
+		user.FullName = input.FullName
+	}
+	if input.StudentProfile != nil {
+		user.StudentProfile = input.StudentProfile
+	}
+	if input.InstructorProfile != nil {
+		user.InstructorProfile = input.InstructorProfile
+	}
+	user.UpdatedAt = time.Now()
+
+	// Обновляем в базе и удаляем из кеша
+	if err := uc.userRepo.Update(ctx, user); err != nil {
+		return err
+	}
+	_ = uc.cache.DeleteUser(ctx, user.Barcode)
+
+	// Публикуем событие
+	return uc.producer.PublishUserUpdated(ctx, &dto.UserUpdatedEvent{
+		ID:       user.ID.Hex(),
+		FullName: user.FullName,
+		Role:     user.Role,
+	})
+}
+
+// ChangePassword изменяет пароль пользователя
+func (uc *UserService) ChangePassword(ctx context.Context, userID, oldPassword, newPassword string) error {
+	user, err := uc.userRepo.GetByID(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	// Проверка старого пароля
+	if err := uc.passwordManager.CheckPassword(user.PasswordHash, oldPassword); err != nil {
+		return domain.ErrInvalidPassword
+	}
+
+	// Хешируем и обновляем новый пароль
+	hash, err := uc.passwordManager.HashPassword(newPassword)
+	if err != nil {
+		return err
+	}
+	user.PasswordHash = hash
+	user.UpdatedAt = time.Now()
+
+	// Сохраняем изменения
+	if err := uc.userRepo.Update(ctx, user); err != nil {
+		return err
+	}
+	_ = uc.cache.DeleteUser(ctx, user.Barcode)
+
+	return nil
 }
