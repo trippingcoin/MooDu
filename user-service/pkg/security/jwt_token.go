@@ -1,6 +1,7 @@
 package security
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -21,6 +22,8 @@ func (j *JWTManager) GenerateAccessToken(userID string, role string) (string, er
 		"exp":     time.Now().Add(15 * time.Minute).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	fmt.Println("GENERATING TOKEN FOR:", userID, role, "AT:", time.Now().Unix())
 
 	return token.SignedString([]byte(j.secretKey))
 }

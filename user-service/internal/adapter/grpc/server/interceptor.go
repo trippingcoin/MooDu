@@ -32,16 +32,21 @@ func AuthInterceptor(secretKey string) grpc.UnaryServerInterceptor {
 			return nil, status.Error(codes.Unauthenticated, "authorization missing")
 		}
 
-		tokenStr := strings.TrimPrefix(authHeader[0], "Bearer ")
+		tokenStr := strings.TrimSpace(strings.TrimPrefix(authHeader[0], "Bearer "))
 		claims := jwt.MapClaims{}
-		_, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
+			// Безопасность: проверка алгоритма
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, status.Error(codes.Unauthenticated, "unexpected signing method")
+			}
 			return []byte(secretKey), nil
 		})
 
-		if err != nil {
+		if err != nil || !token.Valid {
 			return nil, status.Error(codes.Unauthenticated, "invalid token")
 		}
 
+		// Здесь ты можешь добавить claims в context если нужно
 		return handler(ctx, req)
 	}
 }

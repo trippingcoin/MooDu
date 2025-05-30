@@ -35,13 +35,13 @@ func (r *UserRepository) Create(ctx context.Context, user *domain.User) error {
 }
 
 func (r *UserRepository) GetByID(ctx context.Context, id string) (*domain.User, error) {
-	objID, err := domain.ParseID(id)
+	_, err := domain.ParseID(id)
 	if err != nil {
 		return nil, domain.ErrInvalidID
 	}
 
 	var u dao.User
-	err = r.db.Collection(r.collection).FindOne(ctx, bson.M{"_id": objID, "is_deleted": false}).Decode(&u)
+	err = r.db.Collection(r.collection).FindOne(ctx, bson.M{"_id": id, "is_deleted": false}).Decode(&u)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, domain.ErrNotFound
