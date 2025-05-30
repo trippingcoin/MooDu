@@ -15,10 +15,10 @@ func main() {
 
 	application, err := app.New(ctx, cfg)
 	if err != nil {
-		log.Fatalf("❌ failed to init app: %v", err)
+		log.Fatalf("failed to init app: %v", err)
 	}
 
 	if err := application.Run(ctx); err != nil {
-		log.Fatalf("❌ app failed: %v", err)
+		log.Fatalf("app failed: %v", err)
 	}
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"api/course"
+	"api/grpc"
 	"api/handler"
 
 	"github.com/gin-gonic/gin"
@@ -10,10 +10,12 @@ import (
 func main() {
 	r := gin.Default()
 
-	course.InitCourseClient("localhost:50051")
-	course.InitAssignmentClient("localhost:50051")
+	grpc.InitCourseClient("localhost:50051")
+	grpc.InitAssignmentClient("localhost:50051")
+	grpc.InitUserClient("localhost:50052")
 	handler.RegisterCourseRoutes(r)
 	handler.RegisterAssignmentRoutes(r)
+	handler.RegisterUserRoutes(r)
 
 	r.Run(":8080")
 }
