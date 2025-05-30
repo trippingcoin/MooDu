@@ -1,0 +1,6 @@
+.env
+
+test
+*_test.go
+
+.vscode

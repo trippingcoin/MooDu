@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "proto/userpb";
+
+service UserService {
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc RefreshToken(RefreshTokenRequest) returns (TokenResponse);
+  rpc Logout(LogoutRequest) returns (Empty);
+  rpc GetProfile(GetProfileRequest) returns (GetProfileResponse);
+  rpc UpdateProfile(UpdateProfileRequest) returns (Empty);
+  rpc ChangePassword(ChangePasswordRequest) returns (Empty);
+}
+
+message RegisterRequest {
+  string full_name = 1;
+  string email = 2;
+  string password = 3;
+  string barcode = 4;
+  string role = 5;
+  float gpa = 6;
+  repeated string certificates = 7;
+  string bank_details = 8;
+  string major = 9;
+  string department = 10;
+}
+
+message RegisterResponse {
+  string user_id = 1;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message TokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message LogoutRequest {
+  string refresh_token = 1;
+}
+
+message GetProfileRequest {
+  string user_id = 1;
+}
+
+message GetProfileResponse {
+  string full_name = 1;
+  string email = 2;
+  string role = 3;
+  float gpa = 4;
+  repeated string certificates = 5;
+  string bank_details = 6;
+  string barcode = 7;
+  string major = 8;
+  string department = 9;
+}
+
+message UpdateProfileRequest {
+  string user_id = 1;
+  string full_name = 2;
+  string email = 3;
+  float gpa = 4;
+  repeated string certificates = 5;
+  string bank_details = 6;
+  string major = 7;
+  string department = 8;
+}
+
+message ChangePasswordRequest {
+  string user_id = 1;
+  string current_password = 2;
+  string new_password = 3;
+}
+
+message Empty {}
